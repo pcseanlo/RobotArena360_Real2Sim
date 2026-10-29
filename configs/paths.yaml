@@ -1,0 +1,42 @@
+# Root folders for the reconstruction pipeline.
+#
+# No machine paths here: each root comes from an environment variable, which
+# scripts/env.sh loads from configs/local.env (template: configs/local.env.example).
+# A value may use ${VAR} (required) or ${VAR:-default}; `{key}` refers to another
+# key of this file. `R2S_CONFIG=/path/to/other.yaml` swaps the whole file.
+
+# Existing step-0 outputs in the scene_generation layout: <scene_data>/DROID/<s>/,
+# <scene_data>/scene_background/<s>/, <scene_data>/assets/<s>/ ($R2S_DATA). Read only: steps 1-10
+# read a scene from here unless it was imported into the run (see scene_data_out);
+# inputs.episode copies its episode from here by default.
+scene_data: ${R2S_SCENE_DATA:-${R2S_DATA}}
+
+# Where step 0 writes (same layout). Once <scene_data_out>/DROID/<s>/ exists (after
+# inputs.episode), steps 1-10 read that scene from here. Setting R2S_SCENE_DATA
+# explicitly pins every read to `scene_data` instead.
+scene_data_out: ${R2S_SCENE_DATA_OUT:-{work}/scene_data}
+
+# Every output of steps 1-10, one folder per scene: <work>/scenes/<s>/.
+work: ${R2S_WORK:-${R2S_WORK_ROOT}/runs/default}
+
+# Where step 1 picks up each scene's generated splat (<splat_source_dir>/<scene>.ply,
+# 3DGS PLY). Today these are World Labs Marble worlds; any 3DGS generator works.
+splat_source_dir: ${R2S_SPLAT_SOURCE_DIR}
+
+# Eden checkout (read only) and the Python environment that runs it (GPU steps run
+# on the host: the eden.sif container's nvcc cannot build gsplat, see docs/setup.md).
+eden: ${R2S_EDEN}
+python: ${R2S_PYTHON:-${R2S_WORK_ROOT}/envs/eden/bin/python}
+
+# Third-party model code used by step 0 (kept outside this repo, read only).
+# scene_generation provides lama/ (+ big-lama weights), InvSR/, MINIMA/weights and
+# third_party/LightGlue; SAM3 and Depth-Anything load from the Hugging Face cache.
+scene_generation: ${R2S_SCENE_GENERATION}
+sam3d_objects: ${R2S_SAM3D_OBJECTS}
+conda_root: ${R2S_CONDA_ROOT}
+
+# Layout refiner (agent-reviewed object layouts, step 10 source) — read only.
+layout_refiner: ${R2S_LAYOUT_REFINER}
+
+# Task notes (dims prior for step 9).
+tasks_dir: ${R2S_TASKS_DIR}

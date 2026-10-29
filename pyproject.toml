@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "r2s"
+version = "0.1.0"
+description = "Real-to-sim scene reconstruction: DROID episode to a sim-ready Gaussian scene for Eden"
+requires-python = ">=3.11"
+# Runs inside the Eden environment (see docs/setup.md); these are the extras the
+# reconstruction steps need on top of Eden's own dependencies.
+dependencies = [
+  "numpy",
+  "scipy",
+  "pyyaml",
+  "trimesh",
+  "shapely",
+  "plyfile",
+  "opencv-python-headless",
+  "imageio",
+  "pillow",
+  "cma",
+  "coacd",
+  "libigl",    # align.check: point-to-mesh distances
+  "embreex",   # align.check: collider ray casting (trimesh's Embree backend)
+]
+
+[project.optional-dependencies]
+viewer = ["viser"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["r2s*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

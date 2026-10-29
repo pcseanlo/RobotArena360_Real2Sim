@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+# Run outputs never live in the repo (see configs/paths.yaml `work`).
+runs/
+*.log
+slurm-*.out
+# This machine's paths and cluster settings (template: configs/local.env.example).
+configs/local.env
+# Machine-specific notes for coding agents.
+CLAUDE.local.md

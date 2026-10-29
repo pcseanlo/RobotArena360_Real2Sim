@@ -1,0 +1,19 @@
+# The keys of scene_generation configs/config_DROID.yaml that MatchFindRot.py reads
+# (identical in config_rh20t.yaml and config_bridge.yaml). No API keys.
+# `dataset` ("droid" / "bridge") is passed by the step from the scene type; it only
+# changes the Genesis camera distance for the background mesh (0.4 vs 1.2 x bbox).
+use_bypass: false
+gemini_mask: true          # demo image = masks/image_<k>_mask.png (the RGB-masked image)
+
+noise_removal:
+  nb_neighbors: 80
+  std_ratio: 0.5
+  distance_threshold: 0.03
+  ransac_n: 3
+  num_iterations: 500
+
+icp:
+  initial_threshold: 0.012
+  fine_threshold: 0.008
+  final_threshold: 0.006
+  max_iterations: 2000

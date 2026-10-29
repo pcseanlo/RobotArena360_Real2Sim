@@ -1,0 +1,130 @@
+# Scene registry: one entry per scene, plus the per-scene settings that the old
+# pipeline only kept in shell history, log-folder names or file evidence.
+#
+# `defaults` applies to every scene; a scene entry overrides keys one by one.
+# Step options use the step name as the key (`align.pose`, `world.collider`, ...);
+# each value is a dict of that step's CLI options (dashes or underscores).
+#
+# Where the per-scene values come from:
+#   world.collider.mode     face count of the old Eden collider (planar preset = 150k faces)
+#   inputs.place.background_depth  file mtimes: the old place run came after inpainted_depth.npy
+#   align.pose              old log-folder names (droid69 lr_rot) / optimize.sh bridge loop
+#   align.scale             truncation sweep against the old refined scale (droid2); others use the default
+#   objects.freeze          the ROUND table of the old submit_generic_home_1200_gpt6_yaw45.sh
+#                           (droid138 round1 was marked rejected in review but is what eval used)
+
+defaults:
+  scene_type: DROID          # sub-folder of scene_data (DROID or bridge)
+  robot: franka
+  world.collider:
+    mode: surface            # collider preset (r2s/world/collider.py PRESETS)
+  inputs.place:
+    background_depth: raw    # pipeline order: place (0c-6) runs before table_depth (0c-7)
+  align.pose: {}
+  align.scale:
+    truncate_w: 0.1
+    truncate_h: 0.3
+
+scenes:
+  droid2:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    align.scale: {truncate_w: 0.45, truncate_h: 0.3}   # recovered by sweep: reproduces the old scale to 0.06%
+    objects.freeze: {refiner_round: droid2_round4}
+  droid4:
+    inputs.place: {background_depth: inpainted}
+    objects.freeze: {refiner_round: droid4_round1}
+  droid7:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    objects.freeze: {refiner_round: droid7_round1}
+  droid8:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    notes: no mesh_sheet.glb; scale fit falls back to the largest-index segmented GLB
+    objects.freeze: {refiner_round: droid8_round1_retry1}
+  droid17:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    objects.freeze: {refiner_round: droid17_round1}
+  droid26:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    notes: not in the production eval list (no Method B fit)
+  droid28:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    objects.freeze: {refiner_round: droid28_round1}
+  droid32:
+    world.collider: {mode: planar}
+    notes: no mesh_sheet.glb; no trimmed splat or Method B fit in the old repo
+  droid34:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    objects.freeze: {refiner_round: droid34_round2}
+  droid35:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    objects.freeze: {refiner_round: droid35_round1}
+  droid37:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    notes: no mesh_sheet.glb
+    objects.freeze: {refiner_round: droid37_round1}
+  droid41:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    notes: no mesh_sheet.glb
+    objects.freeze: {refiner_round: round5}
+  droid45:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    objects.freeze: {refiner_round: droid45_round1}
+  droid69:
+    align.pose: {lr_rot: 0.05}
+    objects.freeze: {refiner_round: droid69_round1}
+  droid108:
+    world.collider: {mode: planar}
+    inputs.place: {background_depth: inpainted}
+    objects.freeze: {refiner_round: droid108_round1_retry1}
+  droid138:
+    objects.freeze: {refiner_round: droid138_round1}
+  droid291:
+    objects.freeze: {refiner_round: droid291_round1_retry1}
+  droid302:
+    objects.freeze: {refiner_round: droid302_round1}
+  droid820:
+    objects.freeze: {refiner_round: droid820_round3}
+  droid950:
+    objects.freeze: {refiner_round: droid950_round1}
+  droid980:
+    objects.freeze: {refiner_round: droid980_round3}
+  droid1034:
+    objects.freeze: {refiner_round: droid1034_round2}
+  droid1142:
+    objects.freeze: {refiner_round: droid1142_round2}
+
+  # Bridge scenes (WidowX). The old repo only ran pose and scale for these.
+  scene17:
+    scene_type: bridge
+    robot: widowx
+    align.pose: {rgb_weight_cma: 1.0, optimizer: cma, lr_trans: 0.015}
+    align.scale: {truncate_w: 0.2, truncate_h: 0.2}
+  scene39:
+    scene_type: bridge
+    robot: widowx
+    world.collider: {mode: planar}
+    align.pose: {rgb_weight_cma: 1.0, optimizer: cma}
+    align.scale: {truncate_w: 0.2, truncate_h: 0.2}
+  scene47:
+    scene_type: bridge
+    robot: widowx
+    world.collider: {mode: planar}
+    align.pose: {rgb_weight_cma: 1.0, optimizer: cma}
+    align.scale: {truncate_w: 0.2, truncate_h: 0.2}
+  scene75:
+    scene_type: bridge
+    robot: widowx
+    world.collider: {mode: planar}
+    align.pose: {rgb_weight_cma: 1.0, optimizer: cma}
+    align.scale: {truncate_w: 0.2, truncate_h: 0.2}
